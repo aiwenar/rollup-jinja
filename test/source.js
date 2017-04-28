@@ -61,4 +61,15 @@ describe('Source', () => {
       })
     })
   })
+
+  describe('identifier parser', () => {
+    it('parses identifiers', () => {
+      new Source('identifier').next().should.deep.eq({
+        type: 'Identifier',
+        value: 'identifier',
+        start: { line: 1, column: 0,  offset: 0 },
+        end:   { line: 1, column: 10, offset: 10 },
+      })
+    })
+  })
 })
