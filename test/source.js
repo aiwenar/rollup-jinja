@@ -32,4 +32,33 @@ describe('Source', () => {
       }
     })
   })
+
+  describe('number parser', () => {
+    it('parses simple decimals', () => {
+      new Source('4857').next().should.deep.eq({
+        type: 'Number',
+        value: 4857,
+        start: { line: 1, column: 0, offset: 0 },
+        end:   { line: 1, column: 4, offset: 4 },
+      })
+    })
+
+    it('parses floating point with implicit fraction', () => {
+      new Source('796.').next().should.deep.eq({
+        type: 'Number',
+        value: 796.,
+        start: { line: 1, column: 0, offset: 0 },
+        end:   { line: 1, column: 4, offset: 4 },
+      })
+    })
+
+    it('parses floating point with explicit fraction', () => {
+      new Source('53.87').next().should.deep.eq({
+        type: 'Number',
+        value: 53.87,
+        start: { line: 1, column: 0, offset: 0 },
+        end:   { line: 1, column: 5, offset: 5 },
+      })
+    })
+  })
 })
