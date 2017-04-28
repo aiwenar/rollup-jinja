@@ -118,4 +118,17 @@ describe('Parser', () => {
       end:   { offset: 0, line: 1, column: 0 },
     })
   })
+
+  it('Consumes text until a placeable', () => {
+    let source = new Source('text {%')
+    let parser = new Parser(source)
+    parser.process()
+    parser.scope.body.should.deep.eq([{
+      type: 'Text',
+      text: 'text ',
+      start: { offset: 0, line: 1, column: 0 },
+      end:   { offset: 5, line: 1, column: 5 },
+    }])
+    source.eos.should.eq(true)
+  })
 })
