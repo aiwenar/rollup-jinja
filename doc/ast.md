@@ -112,6 +112,9 @@ Any statement which does not produce output.
 
 ```js
 interface PutValue <: Placeable {
+  type: "PutValue",
+  value: Expression,
+  filters: [Expression],
 }
 ```
 

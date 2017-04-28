@@ -1,4 +1,4 @@
-import { Source, Parser } from '../lib/parse'
+import { Source, Parser, SyntaxError } from '../lib/parse'
 
 describe('Source', () => {
   describe('symbols parser', () => {
@@ -122,7 +122,9 @@ describe('Parser', () => {
   it('Consumes text until a placeable', () => {
     let source = new Source('text {%')
     let parser = new Parser(source)
-    parser.process()
+    ;(() => {
+      parser.process()
+    }).should.throw(SyntaxError)
     parser.scope.body.should.deep.eq([{
       type: 'Text',
       text: 'text ',
