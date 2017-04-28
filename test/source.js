@@ -1,4 +1,4 @@
-import { Source } from '../lib/parse'
+import { Source, Parser } from '../lib/parse'
 
 describe('Source', () => {
   describe('symbols parser', () => {
@@ -96,6 +96,26 @@ describe('Source', () => {
         start: { line: 1, column: 0,  offset: 0 },
         end:   { line: 1, column: 12, offset: 12 },
       })
+    })
+  })
+})
+
+describe('Parser', () => {
+  it('Generates proper empty AST', () => {
+    new Parser(new Source('')).generate().should.deep.eq({
+      type: 'Template',
+      extends: null,
+      blocks: [],
+      macros: [],
+      body: {
+        type: 'Scope',
+        variables: [],
+        body: [],
+        start: { offset: 0, line: 1, column: 0 },
+        end:   { offset: 0, line: 1, column: 0 },
+      },
+      start: { offset: 0, line: 1, column: 0 },
+      end:   { offset: 0, line: 1, column: 0 },
     })
   })
 })
