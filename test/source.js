@@ -324,4 +324,41 @@ describe('Parser', () => {
       end: loc(13, 1, 13),
     }])
   })
+
+  it("parses a placeable with filters", () => {
+    let source = new Source('{{ var | f1() | f2 }}')
+    let parser = new Parser(source)
+    parser.process()
+    parser.scope.body.should.deep.eq([{
+      type: 'PutValue',
+      value: {
+        type: 'Variable',
+        name: 'var',
+        start: loc(3, 1, 3),
+        end: loc(6, 1, 6),
+      },
+      filters: [
+        {
+          type: 'FunctionCall',
+          function: {
+            type: 'Identifier',
+            value: 'f1',
+            start: loc(9, 1, 9),
+            end: loc(11, 1, 11),
+          },
+          args: [],
+          start: loc(9, 1, 9),
+          end: loc(11, 1, 11),
+        },
+        {
+          type: 'Variable',
+          name: 'f2',
+          start: loc(16, 1, 16),
+          end: loc(18, 1, 18),
+        }
+      ],
+      start: loc(0, 1, 0),
+      end: loc(21, 1, 21),
+    }])
+  })
 })
