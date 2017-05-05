@@ -100,6 +100,8 @@ describe('Source', () => {
   })
 })
 
+const loc = (offset, line, column) => ({ offset, line, column })
+
 describe('Parser', () => {
   it('Generates proper empty AST', () => {
     new Parser(new Source('')).generate().should.deep.eq({
@@ -111,11 +113,11 @@ describe('Parser', () => {
         type: 'Scope',
         variables: [],
         body: [],
-        start: { offset: 0, line: 1, column: 0 },
-        end:   { offset: 0, line: 1, column: 0 },
+        start: loc(0, 1, 0),
+        end:   loc(0, 1, 0),
       },
-      start: { offset: 0, line: 1, column: 0 },
-      end:   { offset: 0, line: 1, column: 0 },
+      start: loc(0, 1, 0),
+      end:   loc(0, 1, 0),
     })
   })
 
@@ -128,8 +130,8 @@ describe('Parser', () => {
     parser.scope.body.should.deep.eq([{
       type: 'Text',
       text: 'text ',
-      start: { offset: 0, line: 1, column: 0 },
-      end:   { offset: 5, line: 1, column: 5 },
+      start: loc(0, 1, 0),
+      end:   loc(5, 1, 5),
     }])
     source.eos.should.eq(true)
   })
