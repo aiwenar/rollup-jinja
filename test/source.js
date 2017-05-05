@@ -134,7 +134,7 @@ describe('Parser', () => {
     ;(() => {
       parser.process()
     }).should.throw(SyntaxError)
-    parser.scope.body.should.deep.eq([{
+    parser.context.body.should.deep.eq([{
       type: 'Text',
       text: 'text ',
       start: loc(0, 1, 0),
@@ -299,7 +299,7 @@ describe('Parser', () => {
     let source = new Source("{{ var + 2 }}")
     let parser = new Parser(source)
     parser.process()
-    parser.scope.body.should.deep.eq([{
+    parser.context.body.should.deep.eq([{
       type: 'PutValue',
       value: {
         type: 'BinOp',
@@ -329,7 +329,7 @@ describe('Parser', () => {
     let source = new Source('{{ var | f1() | f2 }}')
     let parser = new Parser(source)
     parser.process()
-    parser.scope.body.should.deep.eq([{
+    parser.context.body.should.deep.eq([{
       type: 'PutValue',
       value: {
         type: 'Variable',
@@ -360,5 +360,26 @@ describe('Parser', () => {
       start: loc(0, 1, 0),
       end: loc(21, 1, 21),
     }])
+  })
+
+  describe("If expressions", () => {
+    it("parses simple if-without-else statement", () => {
+      let source = new Source('{% if var %}{% endif %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'IfStatement',
+        condition: {
+          type: 'Variable',
+          name: 'var',
+          start: loc(6, 1, 6),
+          end: loc(9, 1, 9),
+        },
+        body: [],
+        alternative: null,
+        start: loc(2, 1, 2),
+        end: loc(20, 1, 20),
+      }])
+    })
   })
 })
