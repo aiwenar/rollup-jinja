@@ -167,6 +167,8 @@ describe('Parser', () => {
           end:   loc(8, 1, 8),
         },
         args: [],
+        start: loc(0, 1, 0),
+        end:   loc(8, 1, 8),
       })
     })
 
@@ -187,6 +189,8 @@ describe('Parser', () => {
           start: loc(9, 1, 9),
           end:   loc(17, 1, 17),
         }],
+        start: loc(0, 1, 0),
+        end:   loc(17, 1, 17),
       })
     })
 
