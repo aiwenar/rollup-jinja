@@ -364,7 +364,7 @@ describe('Parser', () => {
 
   describe("If expressions", () => {
     it("parses simple if-without-else statement", () => {
-      let source = new Source('{% if var %}{% endif %}')
+      let source = new Source('{% if var %}then{% endif %}')
       let parser = new Parser(source)
       parser.process()
       parser.context.body.should.deep.eq([{
@@ -375,10 +375,15 @@ describe('Parser', () => {
           start: loc(6, 1, 6),
           end: loc(9, 1, 9),
         },
-        body: [],
+        body: [{
+          type: 'Text',
+          text: 'then',
+          start: loc(12, 1, 12),
+          end: loc(16, 1, 16),
+        }],
         alternative: null,
-        start: loc(2, 1, 2),
-        end: loc(20, 1, 20),
+        start: loc(0, 1, 0),
+        end: loc(24, 1, 24),
       }])
     })
   })
