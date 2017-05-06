@@ -922,5 +922,48 @@ describe('Parser', () => {
         }
       })
     })
+
+    it("parses a macro call", () => {
+      let source = new Source('{% call macro(12, arg) %}body{% endcall %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'MacroCall',
+        macro: {
+          type: 'Identifier',
+          value: 'macro',
+          start: loc(8, 1, 8),
+          end: loc(13, 1, 13),
+        },
+        args: [
+          {
+            type: 'Number',
+            value: 12,
+            start: loc(14, 1, 14),
+            end: loc(16, 1, 16),
+          },
+          {
+            type: 'Variable',
+            name: 'arg',
+            start: loc(18, 1, 18),
+            end: loc(21, 1, 21),
+          }
+        ],
+        body: {
+          type: 'Scope',
+          variables: [],
+          body: [{
+            type: 'Text',
+            text: 'body',
+            start: loc(25, 1, 25),
+            end: loc(29, 1, 29),
+          }],
+          start: loc(25, 1, 25),
+          end: loc(29, 1, 29),
+        },
+        start: loc(0, 1, 0),
+        end: loc(39, 1, 39),
+      }])
+    })
   })
 })
