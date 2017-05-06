@@ -75,7 +75,7 @@ describe('Source', () => {
 
   describe('string parser', () => {
     it('parses " strings', () => {
-      new Source('"a \'string\'"').next().should.deep.eq({
+      new Source('"a \'string\'"').next(true).should.deep.eq({
         type: 'String',
         start: { line: 1, column: 0,  offset: 0 },
         end:   { line: 1, column: 13, offset: 13 },
@@ -83,7 +83,7 @@ describe('Source', () => {
     })
 
     it('parses \' strings', () => {
-      new Source('\'a "string"\'').next().should.deep.eq({
+      new Source('\'a "string"\'').next(true).should.deep.eq({
         type: 'String',
         start: { line: 1, column: 0,  offset: 0 },
         end:   { line: 1, column: 13, offset: 13 },
@@ -91,7 +91,7 @@ describe('Source', () => {
     })
 
     it('parses an unterminated string', () => {
-      new Source('\'a "string"').next().should.deep.eq({
+      new Source('\'a "string"').next(true).should.deep.eq({
         type: 'String',
         start: { line: 1, column: 0,  offset: 0 },
         end:   { line: 1, column: 12, offset: 12 },
