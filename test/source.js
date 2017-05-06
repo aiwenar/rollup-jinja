@@ -161,8 +161,8 @@ describe('Parser', () => {
       parser.expression([]).should.deep.eq({
         type: 'FunctionCall',
         function: {
-          type: 'Identifier',
-          value: 'function',
+          type: 'Variable',
+          name: 'function',
           start: loc(0, 1, 0),
           end:   loc(8, 1, 8),
         },
@@ -172,14 +172,48 @@ describe('Parser', () => {
       })
     })
 
+    it("reads method calls", () => {
+      let source = new Source('object.method()')
+      let parser = new Parser(source)
+      parser.expression([]).should.deep.eq({
+        type: 'FunctionCall',
+        function: {
+          type: 'BinOp',
+          op: {
+            type: 'Operator',
+            value: '.',
+            start: loc(6, 1, 6),
+            end: loc(7, 1, 7),
+          },
+          left: {
+            type: 'Variable',
+            name: 'object',
+            start: loc(0, 1, 0),
+            end: loc(6, 1, 6),
+          },
+          right: {
+            type: 'Variable',
+            name: 'method',
+            start: loc(7, 1, 7),
+            end: loc(13, 1, 13),
+          },
+          start: loc(0, 1, 0),
+          end: loc(13, 1, 13),
+        },
+        args: [],
+        start: loc(0, 1, 0),
+        end: loc(15, 1, 15),
+      })
+    })
+
     it("reads function call with arguments", () => {
       let source = new Source('function(variable, 12)')
       let parser = new Parser(source)
       parser.expression([]).should.deep.eq({
         type: 'FunctionCall',
         function: {
-          type: 'Identifier',
-          value: 'function',
+          type: 'Variable',
+          name: 'function',
           start: loc(0, 1, 0),
           end:   loc(8, 1, 8),
         },
@@ -349,8 +383,8 @@ describe('Parser', () => {
         {
           type: 'FunctionCall',
           function: {
-            type: 'Identifier',
-            value: 'f1',
+            type: 'Variable',
+            name: 'f1',
             start: loc(9, 1, 9),
             end: loc(11, 1, 11),
           },
