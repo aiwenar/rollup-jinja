@@ -168,12 +168,12 @@ describe('Parser', () => {
         },
         args: [],
         start: loc(0, 1, 0),
-        end:   loc(8, 1, 8),
+        end:   loc(10, 1, 10),
       })
     })
 
-    it("reads function call with argument", () => {
-      let source = new Source('function(variable)')
+    it("reads function call with arguments", () => {
+      let source = new Source('function(variable, 12)')
       let parser = new Parser(source)
       parser.expression([]).should.deep.eq({
         type: 'FunctionCall',
@@ -183,14 +183,22 @@ describe('Parser', () => {
           start: loc(0, 1, 0),
           end:   loc(8, 1, 8),
         },
-        args: [{
-          type: 'Variable',
-          name: 'variable',
-          start: loc(9, 1, 9),
-          end:   loc(17, 1, 17),
-        }],
+        args: [
+          {
+            type: 'Variable',
+            name: 'variable',
+            start: loc(9, 1, 9),
+            end:   loc(17, 1, 17),
+          },
+          {
+            type: 'Number',
+            value: 12,
+            start: loc(19, 1, 19),
+            end: loc(21, 1, 21),
+          }
+        ],
         start: loc(0, 1, 0),
-        end:   loc(17, 1, 17),
+        end: loc(22, 1, 22),
       })
     })
 
@@ -348,7 +356,7 @@ describe('Parser', () => {
           },
           args: [],
           start: loc(9, 1, 9),
-          end: loc(11, 1, 11),
+          end: loc(13, 1, 13),
         },
         {
           type: 'Variable',
