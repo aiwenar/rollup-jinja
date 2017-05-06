@@ -966,4 +966,44 @@ describe('Parser', () => {
       }])
     })
   })
+
+  it("parses filter blocks", () => {
+    let source = new Source('{% filter fun(param) %}body{% endfilter %}')
+    let parser = new Parser(source)
+    parser.process()
+    parser.context.body.should.deep.eq([{
+      type: 'Filter',
+      filter: {
+        type: 'FunctionCall',
+        function: {
+          type: 'Variable',
+          name: 'fun',
+          start: loc(10, 1, 10),
+          end: loc(13, 1, 13),
+        },
+        args: [{
+          type: 'Variable',
+          name: 'param',
+          start: loc(14, 1, 14),
+          end: loc(19, 1, 19),
+        }],
+        start: loc(10, 1, 10),
+        end: loc(20, 1, 20),
+      },
+      body: {
+        type: 'Scope',
+        variables: [],
+        body: [{
+          type: 'Text',
+          text: 'body',
+          start: loc(23, 1, 23),
+          end: loc(27, 1, 27),
+        }],
+        start: loc(23, 1, 23),
+        end: loc(27, 1, 27),
+      },
+      start: loc(0, 1, 0),
+      end: loc(39, 1, 39),
+    }])
+  })
 })
