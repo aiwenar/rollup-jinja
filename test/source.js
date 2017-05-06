@@ -593,4 +593,112 @@ describe('Parser', () => {
       }])
     })
   })
+
+  describe("For loops", () => {
+    it("parses a simple for-loop", () => {
+      let source = new Source('{% for item in iterable %}body{% endfor %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'ForLoop',
+        pattern: {
+          type: 'Variable',
+          name: 'item',
+          start: loc(7, 1, 7),
+          end: loc(11, 1, 11),
+        },
+        iterable: {
+          type: 'Variable',
+          name: 'iterable',
+          start: loc(15, 1, 15),
+          end: loc(23, 1, 23),
+        },
+        body: {
+          type: 'Scope',
+          variables: [],
+          body: [{
+            type: 'Text',
+            text: 'body',
+            start: loc(26, 1, 26),
+            end: loc(30, 1, 30),
+          }],
+          start: loc(26, 1, 26),
+          end: loc(30, 1, 30),
+        },
+        start: loc(0, 1, 0),
+        end: loc(39, 1, 39),
+      }])
+    })
+
+    it("parses a for loop with a pattern and iterable expression", () => {
+      let source = new Source('{% for key, value in dict.items() %}body{% endfor %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'ForLoop',
+        pattern: {
+          type: 'Unpack',
+          names: [
+            {
+              type: 'Variable',
+              name: 'key',
+              start: loc(7, 1, 7),
+              end: loc(10, 1, 10),
+            },
+            {
+              type: 'Variable',
+              name: 'value',
+              start: loc(12, 1, 12),
+              end: loc(17, 1, 17),
+            }
+          ],
+          start: loc(7, 1, 7),
+          end: loc(17, 1, 17),
+        },
+        iterable: {
+          type: 'FunctionCall',
+          function: {
+            type: 'BinOp',
+            op: {
+              type: 'Operator',
+              value: '.',
+              start: loc(25, 1, 25),
+              end: loc(26, 1, 26),
+            },
+            left: {
+              type: 'Variable',
+              name: 'dict',
+              start: loc(21, 1, 21),
+              end: loc(25, 1, 25),
+            },
+            right: {
+              type: 'Variable',
+              name: 'items',
+              start: loc(26, 1, 26),
+              end: loc(31, 1, 31),
+            },
+            start: loc(21, 1, 21),
+            end: loc(31, 1, 31),
+          },
+          args: [],
+          start: loc(21, 1, 21),
+          end: loc(33, 1, 33),
+        },
+        body: {
+          type: 'Scope',
+          variables: [],
+          body: [{
+            type: 'Text',
+            text: 'body',
+            start: loc(36, 1, 36),
+            end: loc(40, 1, 40),
+          }],
+          start: loc(36, 1, 36),
+          end: loc(40, 1, 40),
+        },
+        start: loc(0, 1, 0),
+        end: loc(49, 1, 49),
+      }])
+    })
+  })
 })
