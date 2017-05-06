@@ -613,6 +613,7 @@ describe('Parser', () => {
           start: loc(15, 1, 15),
           end: loc(23, 1, 23),
         },
+        filter: null,
         body: {
           type: 'Scope',
           variables: [],
@@ -685,6 +686,7 @@ describe('Parser', () => {
           start: loc(21, 1, 21),
           end: loc(33, 1, 33),
         },
+        filter: null,
         body: {
           type: 'Scope',
           variables: [],
@@ -733,6 +735,7 @@ describe('Parser', () => {
           start: loc(24, 1, 24),
           end: loc(28, 1, 28),
         },
+        filter: null,
         alternative: [{
           type: 'Text',
           text: 'else',
@@ -741,6 +744,59 @@ describe('Parser', () => {
         }],
         start: loc(0, 1, 0),
         end: loc(51, 1, 51),
+      }])
+    })
+
+    it("parses a for loop with a filter", () => {
+      let source = new Source('{% for item in source if filter(item) %}body{% endfor %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'ForLoop',
+        pattern: {
+          type: 'Variable',
+          name: 'item',
+          start: loc(7, 1, 7),
+          end: loc(11, 1, 11),
+        },
+        iterable: {
+          type: 'Variable',
+          name: 'source',
+          start: loc(15, 1, 15),
+          end: loc(21, 1, 21),
+        },
+        filter: {
+          type: 'FunctionCall',
+          function: {
+            type: 'Variable',
+            name: 'filter',
+            start: loc(25, 1, 25),
+            end: loc(31, 1, 31),
+          },
+          args: [{
+            type: 'Variable',
+            name: 'item',
+            start: loc(32, 1, 32),
+            end: loc(36, 1, 36),
+          }],
+          start: loc(25, 1, 25),
+          end: loc(37, 1, 37),
+        },
+        body: {
+          type: 'Scope',
+          variables: [],
+          body: [{
+            type: 'Text',
+            text: 'body',
+            start: loc(40, 1, 40),
+            end: loc(44, 1, 44),
+          }],
+          start: loc(40, 1, 40),
+          end: loc(44, 1, 44),
+        },
+        alternative: null,
+        start: loc(0, 1, 0),
+        end: loc(53, 1, 53),
       }])
     })
   })
