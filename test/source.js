@@ -800,4 +800,127 @@ describe('Parser', () => {
       }])
     })
   })
+
+  describe("Macros", () => {
+    it("parses simple macros", () => {
+      let source = new Source('{% macro name(a1, a2) %}body{% endmacro %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([])
+      parser.macros.should.deep.eq({
+        'name': {
+          type: 'Macro',
+          name: {
+            type: 'Identifier',
+            value: 'name',
+            start: loc(9, 1, 9),
+            end: loc(13, 1, 13),
+          },
+          args: [
+            {
+              type: 'Argument',
+              name: {
+                type: 'Identifier',
+                value: 'a1',
+                start: loc(14, 1, 14),
+                end: loc(16, 1, 16),
+              },
+              default: null,
+              start: loc(14, 1, 14),
+              end: loc(16, 1, 16),
+            },
+            {
+              type: 'Argument',
+              name: {
+                type: 'Identifier',
+                value: 'a2',
+                start: loc(18, 1, 18),
+                end: loc(20, 1, 20),
+              },
+              default: null,
+              start: loc(18, 1, 18),
+              end: loc(20, 1, 20),
+            }
+          ],
+          body: {
+            type: 'Scope',
+            variables: [],
+            body: [{
+              type: 'Text',
+              text: 'body',
+              start: loc(24, 1, 24),
+              end: loc(28, 1, 28),
+            }],
+            start: loc(24, 1, 24),
+            end: loc(28, 1, 28),
+          },
+          start: loc(0, 1, 0),
+          end: loc(39, 1, 39),
+        }
+      })
+    })
+
+    it("parses macros with default arguments", () => {
+      let source = new Source('{% macro name(a1, a2=10) %}body{% endmacro %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([])
+      parser.macros.should.deep.eq({
+        'name': {
+          type: 'Macro',
+          name: {
+            type: 'Identifier',
+            value: 'name',
+            start: loc(9, 1, 9),
+            end: loc(13, 1, 13),
+          },
+          args: [
+            {
+              type: 'Argument',
+              name: {
+                type: 'Identifier',
+                value: 'a1',
+                start: loc(14, 1, 14),
+                end: loc(16, 1, 16),
+              },
+              default: null,
+              start: loc(14, 1, 14),
+              end: loc(16, 1, 16),
+            },
+            {
+              type: 'Argument',
+              name: {
+                type: 'Identifier',
+                value: 'a2',
+                start: loc(18, 1, 18),
+                end: loc(20, 1, 20),
+              },
+              default: {
+                type: 'Number',
+                value: 10,
+                start: loc(21, 1, 21),
+                end: loc(23, 1, 23),
+              },
+              start: loc(18, 1, 18),
+              end: loc(23, 1, 23),
+            }
+          ],
+          body: {
+            type: 'Scope',
+            variables: [],
+            body: [{
+              type: 'Text',
+              text: 'body',
+              start: loc(27, 1, 27),
+              end: loc(31, 1, 31),
+            }],
+            start: loc(27, 1, 27),
+            end: loc(31, 1, 31),
+          },
+          start: loc(0, 1, 0),
+          end: loc(42, 1, 42),
+        }
+      })
+    })
+  })
 })
