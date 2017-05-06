@@ -1006,4 +1006,76 @@ describe('Parser', () => {
       end: loc(39, 1, 39),
     }])
   })
+
+  describe("Variable assignment", () => {
+    it("parses simple assignment", () => {
+      let source = new Source('{% set name = value %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'Assign',
+        pattern: {
+          type: 'Variable',
+          name: 'name',
+          start: loc(7, 1, 7),
+          end: loc(11, 1, 11),
+        },
+        value: {
+          type: 'Variable',
+          name: 'value',
+          start: loc(14, 1, 14),
+          end: loc(19, 1, 19),
+        },
+        start: loc(0, 1, 0),
+        end: loc(22, 1, 22),
+      }])
+    })
+
+    it("parses pattern assignment", () => {
+      let source = new Source('{% set n1, n2 = get(values) %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'Assign',
+        pattern: {
+          type: 'Unpack',
+          names: [
+            {
+              type: 'Variable',
+              name: 'n1',
+              start: loc(7, 1, 7),
+              end: loc(9, 1, 9),
+            },
+            {
+              type: 'Variable',
+              name: 'n2',
+              start: loc(11, 1, 11),
+              end: loc(13, 1, 13),
+            }
+          ],
+          start: loc(7, 1, 7),
+          end: loc(13, 1, 13),
+        },
+        value: {
+          type: 'FunctionCall',
+          function: {
+            type: 'Variable',
+            name: 'get',
+            start: loc(16, 1, 16),
+            end: loc(19, 1, 19),
+          },
+          args: [{
+            type: 'Variable',
+            name: 'values',
+            start: loc(20, 1, 20),
+            end: loc(26, 1, 26),
+          }],
+          start: loc(16, 1, 16),
+          end: loc(27, 1, 27),
+        },
+        start: loc(0, 1, 0),
+        end: loc(30, 1, 30),
+      }])
+    })
+  })
 })
