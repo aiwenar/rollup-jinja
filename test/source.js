@@ -439,5 +439,116 @@ describe('Parser', () => {
         end: loc(38, 1, 38),
       }])
     })
+
+    it("Parses an if-elif statement", () => {
+      let source = new Source('{% if v1 %}then{% elif v2 %}elif{% endif %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'CaseStatement',
+        arms: [
+          {
+            type: 'Arm',
+            condition: {
+              type: 'Variable',
+              name: 'v1',
+              start: loc(6, 1, 6),
+              end: loc(8, 1, 8),
+            },
+            body: [{
+              type: 'Text',
+              text: 'then',
+              start: loc(11, 1, 11),
+              end: loc(15, 1, 15),
+            }],
+            start: loc(0, 1, 0),
+            end: loc(22, 1, 22),
+          },
+          {
+            type: 'Arm',
+            condition: {
+              type: 'Variable',
+              name: 'v2',
+              start: loc(23, 1, 23),
+              end: loc(25, 1, 25),
+            },
+            body: [{
+              type: 'Text',
+              text: 'elif',
+              start: loc(28, 1, 28),
+              end: loc(32, 1, 32),
+            }],
+            start: loc(15, 1, 15),
+            end: loc(40, 1, 40),
+          }
+        ],
+        start: loc(0, 1, 0),
+        end: loc(40, 1, 40),
+      }])
+    })
+
+    it("Parses an if-elif-else statement", () => {
+      let source = new Source('{% if v1 %}then{% elif v2 %}elif{% else %}else{% endif %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'CaseStatement',
+        arms: [
+          {
+            type: 'Arm',
+            condition: {
+              type: 'Variable',
+              name: 'v1',
+              start: loc(6, 1, 6),
+              end: loc(8, 1, 8),
+            },
+            body: [{
+              type: 'Text',
+              text: 'then',
+              start: loc(11, 1, 11),
+              end: loc(15, 1, 15),
+            }],
+            start: loc(0, 1, 0),
+            end: loc(22, 1, 22),
+          },
+          {
+            type: 'Arm',
+            condition: {
+              type: 'Variable',
+              name: 'v2',
+              start: loc(23, 1, 23),
+              end: loc(25, 1, 25),
+            },
+            body: [{
+              type: 'Text',
+              text: 'elif',
+              start: loc(28, 1, 28),
+              end: loc(32, 1, 32),
+            }],
+            start: loc(15, 1, 15),
+            end: loc(39, 1, 39),
+          },
+          {
+            type: 'Arm',
+            condition: {
+              type: 'Boolean',
+              value: true,
+              start: loc(32, 1, 32),
+              end: loc(32, 1, 32),
+            },
+            body: [{
+              type: 'Text',
+              text: 'else',
+              start: loc(42, 1, 42),
+              end: loc(46, 1, 46),
+            }],
+            start: loc(32, 1, 32),
+            end: loc(54, 1, 54),
+          }
+        ],
+        start: loc(0, 1, 0),
+        end: loc(54, 1, 54),
+      }])
+    })
   })
 })
