@@ -1078,4 +1078,46 @@ describe('Parser', () => {
       }])
     })
   })
+
+  it("parses blocks", () => {
+    let source = new Source('{% block name %}body{% endblock %}')
+    let parser = new Parser(source)
+    parser.process()
+    parser.context.body.should.deep.eq([{
+      type: 'CallBlock',
+      name: {
+        type: 'Identifier',
+        value: 'name',
+        start: loc(9, 1, 9),
+        end: loc(13, 1, 13),
+      },
+      start: loc(0, 1, 0),
+      end: loc(34, 1, 34),
+    }])
+    parser.blocks.should.deep.eq({
+      'name': {
+        type: 'Block',
+        name: {
+          type: 'Identifier',
+          value: 'name',
+          start: loc(9, 1, 9),
+          end: loc(13, 1, 13),
+        },
+        body: {
+          type: 'Scope',
+          variables: [],
+          body: [{
+            type: 'Text',
+            text: 'body',
+            start: loc(16, 1, 16),
+            end: loc(20, 1, 20),
+          }],
+          start: loc(16, 1, 16),
+          end: loc(20, 1, 20),
+        },
+        start: loc(0, 1, 0),
+        end: loc(34, 1, 34),
+      }
+    })
+  })
 })
