@@ -386,5 +386,39 @@ describe('Parser', () => {
         end: loc(24, 1, 24),
       }])
     })
+
+    it("parses an if-else statement", () => {
+      let source = new Source('{% if var %}then{% else %}else{% endif %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'IfStatement',
+        condition: {
+          type: 'Variable',
+          name: 'var',
+          start: loc(6, 1, 6),
+          end: loc(9, 1, 9),
+        },
+        body: [{
+          type: 'Text',
+          text: 'then',
+          start: loc(12, 1, 12),
+          end: loc(16, 1, 16),
+        }],
+        alternative: {
+          type: 'Block',
+          body: [{
+            type: 'Text',
+            text: 'else',
+            start: loc(26, 1, 26),
+            end: loc(30, 1, 30),
+          }],
+          start: loc(16, 1, 16),
+          end: loc(38, 1, 38),
+        },
+        start: loc(0, 1, 0),
+        end: loc(38, 1, 38),
+      }])
+    })
   })
 })
