@@ -625,6 +625,7 @@ describe('Parser', () => {
           start: loc(26, 1, 26),
           end: loc(30, 1, 30),
         },
+        alternative: null,
         start: loc(0, 1, 0),
         end: loc(39, 1, 39),
       }])
@@ -696,8 +697,50 @@ describe('Parser', () => {
           start: loc(36, 1, 36),
           end: loc(40, 1, 40),
         },
+        alternative: null,
         start: loc(0, 1, 0),
         end: loc(49, 1, 49),
+      }])
+    })
+
+    it("parses a for loop with an else clause", () => {
+      let source = new Source('{% for item in source %}body{% else %}else{% endfor %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([{
+        type: 'ForLoop',
+        pattern: {
+          type: 'Variable',
+          name: 'item',
+          start: loc(7, 1, 7),
+          end: loc(11, 1, 11),
+        },
+        iterable: {
+          type: 'Variable',
+          name: 'source',
+          start: loc(15, 1, 15),
+          end: loc(21, 1, 21),
+        },
+        body: {
+          type: 'Scope',
+          variables: [],
+          body: [{
+            type: 'Text',
+            text: 'body',
+            start: loc(24, 1, 24),
+            end: loc(28, 1, 28),
+          }],
+          start: loc(24, 1, 24),
+          end: loc(28, 1, 28),
+        },
+        alternative: [{
+          type: 'Text',
+          text: 'else',
+          start: loc(38, 1, 38),
+          end: loc(42, 1, 42),
+        }],
+        start: loc(0, 1, 0),
+        end: loc(51, 1, 51),
       }])
     })
   })
