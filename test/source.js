@@ -178,20 +178,14 @@ describe('Parser', () => {
       parser.expression([]).should.deep.eq({
         type: 'FunctionCall',
         function: {
-          type: 'BinOp',
-          op: {
-            type: 'Operator',
-            value: '.',
-            start: loc(6, 1, 6),
-            end: loc(7, 1, 7),
-          },
-          left: {
+          type: 'Member',
+          object: {
             type: 'Variable',
             name: 'object',
             start: loc(0, 1, 0),
             end: loc(6, 1, 6),
           },
-          right: {
+          property: {
             type: 'Variable',
             name: 'method',
             start: loc(7, 1, 7),
@@ -302,15 +296,14 @@ describe('Parser', () => {
             type: 'BinOp',
             op: op('-', 22, 1, 22),
             left: {
-              type: 'BinOp',
-              op: op('.', 18, 1, 18),
-              left: {
+              type: 'Member',
+              object: {
                 type: 'Variable',
                 name: 'v4',
                 start: loc(16, 1, 16),
                 end: loc(18, 1, 18),
               },
-              right: {
+              property: {
                 type: 'Variable',
                 name: 'v5',
                 start: loc(19, 1, 19),
@@ -660,20 +653,14 @@ describe('Parser', () => {
         iterable: {
           type: 'FunctionCall',
           function: {
-            type: 'BinOp',
-            op: {
-              type: 'Operator',
-              value: '.',
-              start: loc(25, 1, 25),
-              end: loc(26, 1, 26),
-            },
-            left: {
+            type: 'Member',
+            object: {
               type: 'Variable',
               name: 'dict',
               start: loc(21, 1, 21),
               end: loc(25, 1, 25),
             },
-            right: {
+            property: {
               type: 'Variable',
               name: 'items',
               start: loc(26, 1, 26),
