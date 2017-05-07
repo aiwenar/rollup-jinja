@@ -965,6 +965,39 @@ describe('Parser', () => {
         end: loc(39, 1, 39),
       }])
     })
+
+    it("parses macro with no arguments", () => {
+      let source = new Source('{% macro name() %}body{% endmacro %}')
+      let parser = new Parser(source)
+      parser.process()
+      parser.context.body.should.deep.eq([])
+      parser.macros.should.deep.eq({
+        'name': {
+          type: 'Macro',
+          name: {
+            type: 'Identifier',
+            value: 'name',
+            start: loc(9, 1, 9),
+            end: loc(13, 1, 13),
+          },
+          args: [],
+          body: {
+            type: 'Scope',
+            variables: [],
+            body: [{
+              type: 'Text',
+              text: 'body',
+              start: loc(18, 1, 18),
+              end: loc(22, 1, 22),
+            }],
+            start: loc(18, 1, 18),
+            end: loc(22, 1, 22),
+          },
+          start: loc(0, 1, 0),
+          end: loc(33, 1, 33),
+        }
+      })
+    })
   })
 
   it("parses filter blocks", () => {
