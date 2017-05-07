@@ -258,74 +258,129 @@ describe('Parser', () => {
       })
     })
 
-    it("respects operator precedence", () => {
-      let source = new Source('v1 + v2 * v3 / (v4.v5 - v6)')
+    it("reads filter expressions", () => {
+      let source = new Source('v1 | f1 | f2(v2)')
       let parser = new Parser(source)
       parser.expression([]).should.deep.eq({
-        type: 'BinOp',
-        op: op('+', 3, 1, 3),
-        left: {
-          type: 'Variable',
-          name: 'v1',
-          start: loc(0, 1, 0),
-          end: loc(2, 1, 2),
-        },
-        right: {
-          type: 'BinOp',
-          op: op('/', 13, 1, 13),
-          start: loc(10, 1, 10),
-          left: {
-            type: 'BinOp',
-            op: op('*', 8, 1, 8),
-            left: {
-              type: 'Variable',
-              name: 'v2',
-              start: loc(5, 1, 5),
-              end: loc(7, 1, 7),
-            },
-            right: {
-              type: 'Variable',
-              name: 'v3',
-              start: loc(10, 1, 10),
-              end: loc(12, 1, 12),
-            },
-            start: loc(5, 1, 5),
+        type: 'Filter',
+        filter: {
+          type: 'FunctionCall',
+          function: {
+            type: 'Variable',
+            name: 'f2',
+            start: loc(10, 1, 10),
             end: loc(12, 1, 12),
+          },
+          args: [{
+            type: 'Variable',
+            name: 'v2',
+            start: loc(13, 1, 13),
+            end: loc(15, 1, 15),
+          }],
+          start: loc(10, 1, 10),
+          end: loc(16, 1, 16),
+        },
+        value: {
+          type: 'Filter',
+          filter: {
+            type: 'Variable',
+            name: 'f1',
+            start: loc(5, 1, 5),
+            end: loc(7, 1, 7),
+          },
+          value: {
+            type: 'Variable',
+            name: 'v1',
+            start: loc(0, 1, 0),
+            end: loc(2, 1, 2),
+          },
+          start: loc(0, 1, 0),
+          end: loc(7, 1, 7),
+        },
+        start: loc(0, 1, 0),
+        end: loc(16, 1, 16),
+      })
+    })
+
+    it("respects operator precedence", () => {
+      let source = new Source('v1 + v2 * v3 / (v4.v5 - v6) | f')
+      let parser = new Parser(source)
+      parser.expression([]).should.deep.eq({
+        type: 'Filter',
+        filter: {
+          type: 'Variable',
+          name: 'f',
+          start: loc(30, 1, 30),
+          end: loc(31, 1, 31),
+        },
+        value: {
+          type: 'BinOp',
+          op: op('+', 3, 1, 3),
+          left: {
+            type: 'Variable',
+            name: 'v1',
+            start: loc(0, 1, 0),
+            end: loc(2, 1, 2),
           },
           right: {
             type: 'BinOp',
-            op: op('-', 22, 1, 22),
+            op: op('/', 13, 1, 13),
+            start: loc(10, 1, 10),
             left: {
-              type: 'Member',
-              object: {
+              type: 'BinOp',
+              op: op('*', 8, 1, 8),
+              left: {
                 type: 'Variable',
-                name: 'v4',
-                start: loc(16, 1, 16),
-                end: loc(18, 1, 18),
+                name: 'v2',
+                start: loc(5, 1, 5),
+                end: loc(7, 1, 7),
               },
-              property: {
+              right: {
                 type: 'Variable',
-                name: 'v5',
-                start: loc(19, 1, 19),
-                end: loc(21, 1, 21),
+                name: 'v3',
+                start: loc(10, 1, 10),
+                end: loc(12, 1, 12),
               },
-              start: loc(16, 1, 16),
-              end: loc(21, 1, 21),
+              start: loc(5, 1, 5),
+              end: loc(12, 1, 12),
             },
             right: {
-              type: 'Variable',
-              name: 'v6',
-              start: loc(24, 1, 24),
+              type: 'BinOp',
+              op: op('-', 22, 1, 22),
+              left: {
+                type: 'Member',
+                object: {
+                  type: 'Variable',
+                  name: 'v4',
+                  start: loc(16, 1, 16),
+                  end: loc(18, 1, 18),
+                },
+                property: {
+                  type: 'Variable',
+                  name: 'v5',
+                  start: loc(19, 1, 19),
+                  end: loc(21, 1, 21),
+                },
+                start: loc(16, 1, 16),
+                end: loc(21, 1, 21),
+              },
+              right: {
+                type: 'Variable',
+                name: 'v6',
+                start: loc(24, 1, 24),
+                end: loc(26, 1, 26),
+              },
+              start: loc(16, 1, 16),
               end: loc(26, 1, 26),
             },
-            start: loc(16, 1, 16),
+            start: loc(5, 1, 5),
             end: loc(26, 1, 26),
           },
-          start: loc(5, 1, 5),
+          start: loc(0, 1, 0),
           end: loc(26, 1, 26),
         },
         start: loc(0, 1, 0),
-        end: loc(26, 1, 26),
+        end: loc(31, 1, 31),
       })
     })
   })
