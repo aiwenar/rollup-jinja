@@ -75,18 +75,18 @@ describe('Source', () => {
 
   describe('string parser', () => {
     it('parses " strings', () => {
-      new Source('"a \'string\'"').next(true).should.deep.eq({
+      new Source('"a \\"string\\"" past').next(true).should.deep.eq({
         type: 'String',
         start: { line: 1, column: 0,  offset: 0 },
-        end:   { line: 1, column: 13, offset: 13 },
+        end:   { line: 1, column: 14, offset: 14 },
       })
     })
 
     it('parses \' strings', () => {
-      new Source('\'a "string"\'').next(true).should.deep.eq({
+      new Source('\'a \\\'string\\\'\' past').next(true).should.deep.eq({
         type: 'String',
         start: { line: 1, column: 0,  offset: 0 },
-        end:   { line: 1, column: 13, offset: 13 },
+        end:   { line: 1, column: 14, offset: 14 },
       })
     })
 
