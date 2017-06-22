@@ -5,7 +5,9 @@
   "module": "dist/rollup-jinja.es.js",
   "license": "MIT",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "prepublish": "rollup -c",
+    "postinstall": "rollup -c"
   },
   "dependencies": {
     "astring": "^1.0.2",
