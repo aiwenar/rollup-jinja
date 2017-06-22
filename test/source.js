@@ -258,6 +258,45 @@ describe('Parser', () => {
       })
     })
 
+    it("reads unary expressions", () => {
+      let source = new Source('not id, -1')
+      let parser = new Parser(source)
+      parser.expression([',']).should.deep.eq({
+        type: 'UnOp',
+        op: {
+          type: 'Operator',
+          value: 'not',
+          start: loc(0, 1, 0),
+          end: loc(3, 1, 3),
+        },
+        argument: {
+          type: 'Variable',
+          name: 'id',
+          start: loc(4, 1, 4),
+          end: loc(6, 1, 6),
+        },
+        start: loc(0, 1, 0),
+        end: loc(6, 1, 6),
+      })
+      parser.expression([',']).should.deep.eq({
+        type: 'UnOp',
+        op: {
+          type: 'Operator',
+          value: '-',
+          start: loc(8, 1, 8),
+          end: loc(9, 1, 9),
+        },
+        argument: {
+          type: 'Number',
+          value: 1,
+          start: loc(9, 1, 9),
+          end: loc(10, 1, 10),
+        },
+        start: loc(8, 1, 8),
+        end: loc(10, 1, 10),
+      })
+    })
+
     it("reads filter expressions", () => {
       let source = new Source('v1 | f1 | f2(v2)')
       let parser = new Parser(source)
