@@ -278,6 +278,12 @@ describe('Parser', () => {
         start: loc(0, 1, 0),
         end: loc(6, 1, 6),
       })
+      parser.next().should.deep.eq({
+        type: 'Symbol',
+        value: ',',
+        start: loc(6, 1, 6),
+        end: loc(7, 1, 7),
+      })
       parser.expression([',']).should.deep.eq({
         type: 'UnOp',
         op: {
